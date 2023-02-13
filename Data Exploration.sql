@@ -27,4 +27,13 @@ FROM `portfolio-project-375106.coviddata.covid_deaths`
 GROUP BY 1, 2, 3
 ORDER BY 5 DESC
 
-
+vac vs pop
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations, 
+      sum(vac.new_vaccinations) OVER (partition by dea.location ORDER BY dea.location, 
+      dea.date) as new_vaccsum
+FROM `portfolio-project-375106.coviddata.covid_vaccinations` vac
+JOIN `portfolio-project-375106.coviddata.covid_deaths` dea
+ON vac.date = dea.date
+  AND vac.location = dea.location
+WHERE dea.continent IS NOT NULL
+ORDER BY 2, 3
